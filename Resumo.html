@@ -1,0 +1,209 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Resumo</title>
+
+  <style>
+    /* Reset mínimo */
+    html, body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    /* Fundo que ocupa toda a viewport */
+    body {
+      /* Ajuste o caminho abaixo se sua imagem estiver em outra pasta */
+      background-image: url("img/PlanodeFundo.jpeg");
+      background-size: cover;           /* cobre toda a área visível */
+      background-position: center center;
+      background-repeat: no-repeat;
+      background-attachment: fixed;     /* fixa o fundo (opcional) */
+      /* Se preferir que o fundo role com a página, troque por: background-attachment: scroll; */
+      color: #fff;
+    }
+
+    /* Se quiser escurecer um pouco o fundo para dar contraste ao texto */
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.25); /* ajuste opacidade se quiser mais/menos contraste */
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* Conteúdo principal por cima do fundo */
+    .page {
+      position: relative;
+      z-index: 1; /* acima do ::before */
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Cabeçalho que você pediu para manter */
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      padding: 12px 16px;
+      margin: 0;
+      z-index: 2;
+      /* fundo transparente para manter o plano de fundo visível */
+      background: transparent;
+    }
+
+    /* Logo à esquerda — sem margens, colado */
+    .logo {
+      display: block;
+      width: 160px;
+      height: auto;
+      margin: 0;
+      padding: 0;
+    }
+
+    /* Container do conteúdo (posicionado sobre o fundo) */
+    main.content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      padding: 2rem;
+      align-items: flex-start; /* você pode trocar para center para centralizar */
+      z-index: 2;
+    }
+
+    /* Estilização do parágrafo que você enviou, mantive suas cores e deixei mais legível */
+    .resumo {
+      font-size: 0.9rem; /* 90% ~ 0.9rem */
+      color: #1f11e4;
+      font-weight: 700;
+      letter-spacing: 1px;
+      margin-top: 8px;
+      background: rgba(255,255,255,0.85); /* fundo claro para legibilidade */
+      color: #1f11e4;
+      padding: 8px 12px;
+      border-radius: 6px;
+      display: inline-block;
+      text-transform: uppercase;
+    }
+
+    .resumo a {
+      color: #1f11e4;
+      text-decoration: underline;
+      font-weight: 800;
+      margin-left: 6px;
+    }
+
+    /* Responsividade: diminuir padding e fonte em telas pequenas */
+    @media (max-width: 600px) {
+      header { padding: 8px 10px; }
+      .logo { width: 120px; }
+      .resumo { font-size: 0.75rem; padding: 6px 10px; }
+    }
+
+  </style>
+</head>
+<body>
+  <div class="page">
+    <!-- cabeçalho que você pediu para manter -->
+    <header>
+      <!-- coluna esquerda: logo -->
+      <div style="flex:0 0 auto; margin:0; padding:0;">
+        <img class="logo" src="img/logo.jpeg" alt="J-Tech Logo">
+      </div>
+
+<!-- CENTRO: Título e slogan (centralizados com absolute) -->
+    <div style="position:absolute; left:50%; transform:translateX(-50%); 
+    text-align:center; width:70%; pointer-events:none;">
+      <h2 style="font-size:56px; font-weight:800; letter-spacing:2px;
+                 text-shadow:2px 2px 4px rgba(0,0,0,0.8); margin:0; color: #1f11e4;">
+        J-Tech Entertainment
+      </h2>
+      <p style="margin:0; color:#d6d5e0; font-size:20px;">
+        Serviços • Equipamentos • Tecnologia
+      </p>
+    </div>
+
+
+
+
+
+      <!-- coluna direita: links/ações no header (você pode colocar o que quiser aqui) -->
+      <nav style="margin-left:auto;">
+        <!-- exemplo de link no header -->
+        <a href="j-tech.html" style="color: white; text-decoration: none; margin-right: 12px;">Início</a>
+        <a href="https://jonathasdev1.github.io/Portifolio1/" style="color: white; text-decoration: none;">Contato</a>
+      </nav>
+    </header>
+
+    <!-- conteúdo principal (tudo que colocar aqui ficará sobre o fundo) -->
+    <main class="content">
+      <!-- seu parágrafo (mantive o texto e o link) -->
+     
+
+      <p class="resumo" style="display:block;">
+        Venha nos conhecer:
+        <a href="https://jonathasdev1.github.io/Portifolio1/" target="_blank" rel="noopener">Click Aqui</a>
+      </p>
+
+     
+
+
+    
+
+
+      <!-- exemplo de conteúdo extra para testar sobreposição -->
+      <section style="margin-top: 54px; color:#fff;">
+        <h2 style="margin:0 0 20px 0;">Seção de Conteúdo</h2>
+        <p style="  width: 100% background: rgba(0,0,0,0.35); font-size: 32px; padding:22px; border-radius:6px; line-height: 2.5;">
+          Visão Geral e Objetivo
+Este projeto concentrou-se no desenvolvimento de um website completo de e-commerce focado na venda de produtos 
+tecnológicos. O objetivo principal foi criar uma plataforma de vendas funcional, dinâmica e com uma experiência de 
+usuário (UX) otimizada, utilizando as tecnologias fundamentais da web: HTML, CSS e JavaScript (JS).
+
+Desenvolvimento e Tecnologias Utilizadas
+O desenvolvimento foi uma jornada gratificante, superando diversas etapas de planejamento e codificação.
+
+Estrutura (HTML): O HTML foi empregado para construir a estrutura semântica de todas as páginas, desde a homepage até as páginas de produtos e checkout.
+
+Estilização e Layout (CSS): Para a estilização, além do CSS puro, foram utilizados frameworks e bibliotecas CSS 
+(como Tailwind CSS ou Bootstrap, por exemplo), que permitiram a criação rápida de um design responsivo e moderno. 
+Isso garantiu que o layout se adaptasse perfeitamente a diferentes dispositivos (desktops, tablets e celulares). O uso de 
+comandos inline e classes utilitárias ajudou a refinar o visual e a tipografia.
+
+Interatividade (JavaScript): O JavaScript foi essencial para transformar o site estático em uma experiência interativa.
+ O projeto fez uso extensivo da manipulação do Document Object Model (DOM) para gerenciar eventos e atualizar o conteúdo em tempo real.
+
+Funcionalidade Chave: Carrossel de Imagens
+Uma das implementações notáveis foi o carrossel de imagens (slideshow) na página principal, crucial para destacar as ofertas. 
+Para essa funcionalidade, foram utilizados comandos e seletores JS específicos:
+
+Controle de Estado: A variável let index = 0; foi usada para rastrear a posição do slide atual.
+
+Seleção de Elementos: Comandos como const img = document.getElementById("slide-img"); e const caption = document.getElementById("slide-caption");
+ permitiram ao script referenciar e manipular dinamicamente a imagem exibida e sua legenda associada.
+
+Navegação: Os controles de navegação foram implementados através de botões, definidos no HTML com classes e IDs, como:
+
+$$\begin{equation\*} \text{\
+O JS capturou os cliques nesses elementos (slide-left e slide-right) para atualizar o valor de index e, consequentemente, alterar a 
+imagem e o texto exibidos, adicionando um efeito de transição suave. Elementos adicionais como slide-indicators também foram manipulados para mostrar
+ visualmente a posição do usuário na sequência de slides.
+        </p>
+      </section>
+
+    </main>
+  </div>
+</body>
+</html>
+
+
+    
+</body>
+</head>

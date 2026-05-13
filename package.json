@@ -1,0 +1,17 @@
+{
+  "name": "j-tech-loja",
+  "version": "1.0.0",
+  "private": true,
+  "description": "J-TECH storefront + admin with Railway/PostgreSQL catalog sync",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "express": "^4.21.2",
+    "pg": "^8.13.3"
+  }
+}

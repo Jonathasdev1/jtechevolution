@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>J-TECH | Loja Oficial</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header class="top-header">
+        <div class="container py-3 d-flex align-items-center gap-3 gap-lg-4 flex-wrap flex-lg-nowrap">
+            <a class="brand-logo" href="j-tech.html">J-TECH</a>
+
+            <form class="search-wrap" role="search">
+                <input class="form-control search-input" type="search" placeholder="Procurar relogios, fones, smartwatch e mais" aria-label="Pesquisar produtos">
+                <button class="search-btn" type="submit" aria-label="Pesquisar">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                </button>
+            </form>
+
+            <div class="user-actions ms-lg-auto">
+                <a href="#" aria-label="Conta"><i class="fa-regular fa-user"></i></a>
+                <a href="#" data-open-cart="true" aria-label="Carrinho"><i class="fa-solid fa-cart-shopping"></i><span id="cartCount">0</span></a>
+                <a href="#" aria-label="Favoritos"><i class="fa-regular fa-heart"></i><span id="favCount">0</span></a>
+            </div>
+        </div>
+
+        <nav class="menu-bar">
+            <div class="container">
+                <ul class="menu-list">
+                    <li><a href="masculina.html">Masculina</a></li>
+                    <li><a href="feminina.html">Feminina</a></li>
+                    <li><a href="eletronicos.html">Eletronicos</a></li>
+                    <li><a href="utensilios.html">Utensilios</a></li>
+                    <li><a href="#promocoes">Promocoes</a></li>
+                    <li><a href="#rodape">Atendimento</a></li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+
+    <section class="hero-wrapper">
+        <div id="jtechCarousel" class="carousel slide" data-bs-ride="carousel">
+            <div class="carousel-indicators">
+                <button type="button" data-bs-target="#jtechCarousel" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+                <button type="button" data-bs-target="#jtechCarousel" data-bs-slide-to="1" aria-label="Slide 2"></button>
+                <button type="button" data-bs-target="#jtechCarousel" data-bs-slide-to="2" aria-label="Slide 3"></button>
+            </div>
+
+            <div class="carousel-inner rounded-4 overflow-hidden">
+                <div class="carousel-item active">
+                    <img src="img/Aqua1.jpeg" class="d-block w-100 hero-image" alt="Oferta de relogios premium">
+                    <div class="hero-overlay">
+                        <p class="hero-tag">Beneficios J-TECH</p>
+                        <h1>Ofertas exclusivas para sua rotina</h1>
+                        <p>Frete rapido, qualidade premium e condicoes especiais no PIX.</p>
+                    </div>
+                </div>
+
+                <div class="carousel-item">
+                    <img src="img/Aquecedor1.jpeg.png" class="d-block w-100 hero-image" alt="Oferta de fones e audio">
+                    <div class="hero-overlay">
+                        <p class="hero-tag">Linha de Aquecedor</p>
+                        <h2>Aquecedor elétrico com alta performance</h2>
+                        <p>Aquecedor eficiente com design moderno para o seu conforto.</p>
+                    </div>
+                </div>
+
+                <div class="carousel-item">
+                    <img src="img/tvbox1.jpeg" class="d-block w-100 hero-image" alt="Smart tecnologia">
+                    <div class="hero-overlay">
+                        <p class="hero-tag">Tecnologia smart</p>
+                        <h2>Eletronicos escolhidos para facilitar sua vida</h2>
+                        <p>Produtos com garantia, entrega nacional e suporte dedicado.</p>
+                    </div>
+                </div>
+            </div>
+
+            <button class="carousel-control-prev" type="button" data-bs-target="#jtechCarousel" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Anterior</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#jtechCarousel" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Proximo</span>
+            </button>
+        </div>
+    </section>
+
+    <section class="container category-switch py-4 py-lg-5">
+        <div class="d-flex align-items-center flex-wrap gap-3">
+            <h3 class="mb-0">Selecionar categoria</h3>
+            <div class="dropdown">
+                <button class="btn btn-dark dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    Abrir categorias
+                </button>
+                <ul class="dropdown-menu dropdown-menu-dark">
+                    <li><a class="dropdown-item" href="masculina.html">Masculina</a></li>
+                    <li><a class="dropdown-item" href="feminina.html">Feminina</a></li>
+                    <li><a class="dropdown-item" href="eletronicos.html">Eletronicos</a></li>
+                    <li><a class="dropdown-item" href="utensilios.html">Utensilios</a></li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <section id="promocoes" class="container pb-5">
+        <div class="row g-4">
+            <div class="col-12 col-md-6 col-xl-4">
+                <article class="promo-card">
+                    <span class="promo-badge"><i class="fa-solid fa-certificate"></i> OFERTA IMPERDIVEL</span>
+
+                    <a id="promoImageLink" class="promo-image-link" href="https://exemplo-afiliado.com" target="_blank" rel="noopener">
+                        <img id="promoMainImage" src="img/Aqua1.jpeg" alt="Produto em promocao">
+                    </a>
+
+                    <div class="thumb-list" id="promoThumbList"></div>
+
+                    <h4 id="promoTitle">Caixa de Som Bluetooth Portatil</h4>
+                    <p class="promo-subtitle" id="promoSubtitle">Potencia e qualidade para qualquer ambiente.</p>
+
+                    <div class="price-line">
+                        <span class="old-price" id="promoOldPrice">R$ 204,90</span>
+                    </div>
+                    <div class="price-line strong">
+                        <span class="new-price" id="promoNewPrice">R$ 103</span>
+                        <span class="off-pill" id="promoOff">49% OFF</span>
+                    </div>
+
+                    <p class="shipping-pill" id="promoShipping">Chegara gratis amanha</p>
+
+                    <div class="promo-actions">
+                        <button id="btnFavorite" type="button" class="btn-favorite" aria-label="Favoritar produto">
+                            <i class="fa-regular fa-heart"></i>
+                        </button>
+                        <button id="btnAddCart" type="button" class="btn-cart">
+                            <i class="fa-solid fa-cart-plus"></i> Inserir no carrinho
+                        </button>
+                    </div>
+
+                    <button class="btn-details" type="button" data-bs-toggle="collapse" data-bs-target="#promoFeatures" aria-expanded="false" aria-controls="promoFeatures">
+                        Ver caracteristicas
+                    </button>
+                    <ul class="collapse feature-list" id="promoFeatures"></ul>
+                </article>
+            </div>
+            <div id="promocoesList" style="display:contents"></div>
+        </div>
+    </section>
+
+    <section id="vitrine" class="container pb-5">
+        <div class="section-block">
+            <div class="section-header">
+                <h2>Masculina</h2>
+                <a href="masculina.html">Ver tudo</a>
+            </div>
+            <div id="masculinaCards" class="row g-4 catalog-grid"></div>
+        </div>
+
+        <div class="section-block">
+            <div class="section-header">
+                <h2>Feminina</h2>
+                <a href="feminina.html">Ver tudo</a>
+            </div>
+            <div id="femininaCards" class="row g-4 catalog-grid"></div>
+        </div>
+
+        <div class="section-block">
+            <div class="section-header">
+                <h2>Eletronicos</h2>
+                <a href="eletronicos.html">Ver tudo</a>
+            </div>
+            <div id="eletronicosCards" class="row g-4 catalog-grid"></div>
+        </div>
+
+        <div class="section-block">
+            <div class="section-header">
+                <h2>Utensilios</h2>
+                <a href="utensilios.html">Ver tudo</a>
+            </div>
+            <div id="utensiliosCards" class="row g-4 catalog-grid"></div>
+        </div>
+    </section>
+
+    <footer id="rodape" class="site-footer mt-4">
+        <div class="container py-5">
+            <div class="row g-4">
+                <div class="col-12 col-md-6 col-xl-3">
+                    <h5>Informacoes da empresa</h5>
+                    <ul>
+                        <li><a href="#">Sobre a J-TECH</a></li>
+                        <li><a href="#">Venda na J-TECH</a></li>
+                        <li><a href="#">Trabalhe conosco</a></li>
+                    </ul>
+                </div>
+
+                <div class="col-12 col-md-6 col-xl-3">
+                    <h5>Ajuda e suporte</h5>
+                    <ul>
+                        <li><a href="#">Politica de frete</a></li>
+                        <li><a href="#">Troca e devolucao</a></li>
+                        <li><a href="#">Perguntas frequentes</a></li>
+                    </ul>
+                </div>
+
+                <div class="col-12 col-md-6 col-xl-3">
+                    <h5>Atendimento ao cliente</h5>
+                    <ul>
+                        <li><a href="#">Contato</a></li>
+                        <li><a href="#">Metodos de pagamento</a></li>
+                        <li><a href="#">Rastreamento do pedido</a></li>
+                    </ul>
+                </div>
+
+                <div class="col-12 col-md-6 col-xl-3">
+                    <h5>Cadastre-se para receber ofertas</h5>
+                    <form class="footer-form">
+                        <input type="email" placeholder="Seu melhor e-mail">
+                        <button type="submit">Inscrever</button>
+                    </form>
+                    <div class="footer-social mt-3">
+                        <a href="#" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+                        <a href="#" aria-label="Youtube"><i class="fa-brands fa-youtube"></i></a>
+                        <a href="#" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <p class="mb-0">&copy; 2026 J-TECH. Todos os direitos reservados.</p>
+        </div>
+    </footer>
+
+    <div id="miniToast" class="mini-toast" role="status" aria-live="polite"></div>
+
+    <a class="whatsapp-float" href="https://wa.me/5500000000000?text=Ola%20J-TECH!%20Gostaria%20de%20atendimento." target="_blank" rel="noopener" aria-label="Falar no WhatsApp">
+        <i class="fa-brands fa-whatsapp"></i>
+    </a>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

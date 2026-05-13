@@ -1,0 +1,8 @@
+[build]
+  publish = "."
+
+[[redirects]]
+  from = "/"
+  to = "/j-tech.html"
+  status = 301
+  force = true
