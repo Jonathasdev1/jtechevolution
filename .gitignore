@@ -1,12 +1,13 @@
-# Dependências Node
+# Dependencias Node
 node_modules/
 
-# Arquivo de dados local (não enviar para o servidor)
+# Arquivo de dados local usado sem DATABASE_URL
 .catalog-local.json
 
-# Variáveis de ambiente (senhas/credenciais)
+# Variaveis de ambiente e credenciais
 .env
 .env.local
+.env.production
 
 # Logs
 *.log

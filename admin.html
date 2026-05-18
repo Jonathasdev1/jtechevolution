@@ -1,9 +1,12 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
+    <!-- Base metadata for responsive admin rendering. -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>J-TECH Admin | Produtos Afiliados</title>
+    <title>J-TECH Admin | Catalogo Profissional</title>
+
+    <!-- External UI assets used by the storefront and admin. -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
@@ -11,170 +14,230 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <link rel="stylesheet" href="styles.css">
 </head>
-<body>
+<body class="admin-body">
+    <!-- Page shell: keeps all admin tools in one responsive workspace. -->
     <main class="admin-shell">
-        <div class="container">
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <h1 class="mb-0 admin-title">Painel Admin - Produto em Promocao</h1>
-                <a class="btn btn-dark" href="j-tech.html">Voltar para a loja</a>
-            </div>
+        <div class="container admin-container">
+            <!-- Top bar: page identity and storefront shortcut. -->
+            <header class="admin-hero">
+                <div>
+                    <span class="admin-kicker">Painel seguro J-TECH</span>
+                    <h1 class="admin-title">Gestao profissional do catalogo</h1>
+                    <p class="admin-hint mb-0">Cadastre produtos, valide imagens nitidas, escolha o destaque da loja e sincronize tudo com o backend pronto para Railway.</p>
+                </div>
+                <a class="btn btn-light admin-store-link" href="j-tech.html">
+                    <i class="fa-solid fa-store"></i>
+                    Ver loja
+                </a>
+            </header>
 
-            <p class="admin-hint mb-4">Este painel e uma base inicial para afiliado: voce cadastra o produto, as imagens e o link de compra. O card da promocao na loja e atualizado automaticamente no navegador.</p>
-
-            <section class="admin-card mb-4">
-                <h2 class="h5 mb-3">Como inserir novo produto</h2>
-                <ol class="admin-steps mb-0">
-                    <li>Escolha se quer criar novo produto ou editar existente.</li>
-                    <li>Preencha titulo, subtitulo, preco antigo e preco atual.</li>
-                    <li>Informe o link de afiliado no campo de compra.</li>
-                    <li>Defina 1 a 3 imagens no formato img/nome-da-imagem.jpg.</li>
-                    <li>Adicione as caracteristicas, uma por linha.</li>
-                    <li>Clique em Salvar produto e depois atualize a pagina da loja.</li>
-                </ol>
+            <!-- Operational summary: quick guidance without interrupting the workflow. -->
+            <section class="admin-summary-grid" aria-label="Resumo do painel">
+                <article class="admin-summary-card">
+                    <i class="fa-solid fa-shield-halved"></i>
+                    <div>
+                        <strong>Backend protegido</strong>
+                        <span>Gravacao exige ADMIN_PASSWORD no servidor.</span>
+                    </div>
+                </article>
+                <article class="admin-summary-card">
+                    <i class="fa-regular fa-image"></i>
+                    <div>
+                        <strong>Imagem nitida</strong>
+                        <span>Uploads precisam ter no minimo 800x800.</span>
+                    </div>
+                </article>
+                <article class="admin-summary-card">
+                    <i class="fa-solid fa-cloud-arrow-up"></i>
+                    <div>
+                        <strong>Deploy Railway</strong>
+                        <span>Use PostgreSQL, PORT automatico e variaveis de ambiente.</span>
+                    </div>
+                </article>
             </section>
 
-            <section class="admin-card">
-                <form id="adminPromoForm" class="row g-3">
-                    <div class="col-12">
-                        <div class="admin-mode-wrap">
-                            <label class="form-label d-block mb-2">Tipo de operacao</label>
-                            <div class="d-flex flex-wrap gap-3">
-                                <label class="admin-radio">
-                                    <input type="radio" name="editMode" id="modeNew" value="new" checked>
-                                    Novo produto
-                                </label>
-                                <label class="admin-radio">
-                                    <input type="radio" name="editMode" id="modeEdit" value="edit">
-                                    Editar existente
-                                </label>
+            <div class="admin-layout">
+                <!-- Primary form: create or edit catalog products. -->
+                <section class="admin-card admin-form-panel">
+                    <div class="admin-section-heading">
+                        <div>
+                            <span class="admin-kicker">Cadastro</span>
+                            <h2>Produto do catalogo</h2>
+                        </div>
+                        <span class="admin-soft-pill">1 a 3 imagens</span>
+                    </div>
+
+                    <form id="adminPromoForm" class="row g-3">
+                        <!-- Form mode controls. -->
+                        <div class="col-12">
+                            <fieldset class="admin-mode-wrap">
+                                <legend class="form-label d-block mb-2">Tipo de operacao</legend>
+                                <div class="d-flex flex-wrap gap-3">
+                                    <label class="admin-radio">
+                                        <input type="radio" name="editMode" id="modeNew" value="new" checked>
+                                        Novo produto
+                                    </label>
+                                    <label class="admin-radio">
+                                        <input type="radio" name="editMode" id="modeEdit" value="edit">
+                                        Editar existente
+                                    </label>
+                                </div>
+                            </fieldset>
+                        </div>
+
+                        <!-- Existing product selector for edit mode. -->
+                        <div class="col-12" id="existingWrap" hidden>
+                            <label for="existingProductSelect" class="form-label">Produto existente</label>
+                            <select id="existingProductSelect" class="form-select">
+                                <option value="">Selecione um produto</option>
+                            </select>
+                        </div>
+
+                        <!-- Product identity fields. -->
+                        <div class="col-12 col-lg-8">
+                            <label for="title" class="form-label">Titulo do produto</label>
+                            <input type="text" id="title" name="title" class="form-control" required>
+                        </div>
+                        <div class="col-12 col-lg-4">
+                            <label for="section" class="form-label">Secao do produto</label>
+                            <select id="section" name="section" class="form-select" required>
+                                <option value="promocoes">Promocoes</option>
+                                <option value="masculina">Masculina</option>
+                                <option value="feminina">Feminina</option>
+                                <option value="eletronicos">Eletronicos</option>
+                                <option value="utensilios">Utensilios</option>
+                            </select>
+                        </div>
+                        <div class="col-12 col-lg-4">
+                            <label for="off" class="form-label">Desconto</label>
+                            <input type="text" id="off" name="off" class="form-control" placeholder="49% OFF" required>
+                        </div>
+                        <div class="col-12 col-lg-8">
+                            <label for="subtitle" class="form-label">Subtitulo curto</label>
+                            <input type="text" id="subtitle" name="subtitle" class="form-control" required>
+                        </div>
+
+                        <!-- Commercial fields. -->
+                        <div class="col-6 col-lg-3">
+                            <label for="oldPrice" class="form-label">Preco antigo</label>
+                            <input type="text" id="oldPrice" name="oldPrice" class="form-control" required>
+                        </div>
+                        <div class="col-6 col-lg-3">
+                            <label for="newPrice" class="form-label">Preco atual</label>
+                            <input type="text" id="newPrice" name="newPrice" class="form-control" required>
+                        </div>
+                        <div class="col-12 col-lg-6">
+                            <label for="shipping" class="form-label">Texto de frete</label>
+                            <input type="text" id="shipping" name="shipping" class="form-control" required>
+                        </div>
+                        <div class="col-12">
+                            <label for="affiliateLink" class="form-label">Link de afiliado</label>
+                            <input type="url" id="affiliateLink" name="affiliateLink" class="form-control" placeholder="https://..." required>
+                        </div>
+
+                        <!-- Image fields with previews for quality control. -->
+                        <div class="col-12">
+                            <div class="admin-image-grid">
+                                <div class="admin-image-field">
+                                    <label for="image1" class="form-label">Imagem 1 principal</label>
+                                    <input type="text" id="image1" name="image1" class="form-control" placeholder="img/produto-1.jpeg" required>
+                                    <label for="image1File" class="form-label mt-2">Ou enviar imagem local</label>
+                                    <input type="file" id="image1File" name="image1File" class="form-control" accept="image/*">
+                                    <div class="admin-image-preview" data-image-preview="1"><span>Sem imagem</span></div>
+                                </div>
+                                <div class="admin-image-field">
+                                    <label for="image2" class="form-label">Imagem 2</label>
+                                    <input type="text" id="image2" name="image2" class="form-control" placeholder="img/produto-2.jpeg">
+                                    <label for="image2File" class="form-label mt-2">Ou enviar imagem local</label>
+                                    <input type="file" id="image2File" name="image2File" class="form-control" accept="image/*">
+                                    <div class="admin-image-preview" data-image-preview="2"><span>Sem imagem</span></div>
+                                </div>
+                                <div class="admin-image-field">
+                                    <label for="image3" class="form-label">Imagem 3</label>
+                                    <input type="text" id="image3" name="image3" class="form-control" placeholder="img/produto-3.jpeg">
+                                    <label for="image3File" class="form-label mt-2">Ou enviar imagem local</label>
+                                    <input type="file" id="image3File" name="image3File" class="form-control" accept="image/*">
+                                    <div class="admin-image-preview" data-image-preview="3"><span>Sem imagem</span></div>
+                                </div>
                             </div>
                         </div>
-                    </div>
 
-                    <div class="col-12" id="existingWrap" hidden>
-                        <label for="existingProductSelect" class="form-label">Produto existente</label>
-                        <select id="existingProductSelect" class="form-select">
-                            <option value="">Selecione um produto</option>
-                        </select>
-                    </div>
+                        <!-- Editorial details. -->
+                        <div class="col-12">
+                            <p class="admin-upload-hint mb-0">Para imagens mais nitidas, prefira fotos quadradas, bem iluminadas e com pelo menos 1200x1200. O painel bloqueia uploads abaixo de 800x800.</p>
+                        </div>
+                        <div class="col-12">
+                            <label for="features" class="form-label">Caracteristicas, uma por linha</label>
+                            <textarea id="features" name="features" class="form-control" rows="5" required></textarea>
+                        </div>
 
-                    <div class="col-12 col-lg-8">
-                        <label for="title" class="form-label">Titulo do produto</label>
-                        <input type="text" id="title" name="title" class="form-control" required>
-                    </div>
-                    <div class="col-12 col-lg-4">
-                        <label for="section" class="form-label">Secao do produto</label>
-                        <select id="section" name="section" class="form-select" required>
-                            <option value="promocoes">Promocoes</option>
-                            <option value="masculina">Masculina</option>
-                            <option value="feminina">Feminina</option>
-                            <option value="eletronicos">Eletronicos</option>
-                            <option value="utensilios">Utensilios</option>
-                        </select>
-                    </div>
+                        <!-- Form actions. -->
+                        <div class="col-12 d-flex flex-wrap gap-2">
+                            <button class="btn btn-dark" type="submit">
+                                <i class="fa-solid fa-floppy-disk"></i>
+                                Salvar produto
+                            </button>
+                            <button class="btn btn-outline-secondary" id="resetPromo" type="button">Restaurar campos</button>
+                            <button class="btn btn-outline-danger" id="deleteProduct" type="button">Excluir selecionado</button>
+                        </div>
+                    </form>
+                </section>
 
-                    <div class="col-12 col-lg-4">
-                        <label for="off" class="form-label">Desconto (ex: 49% OFF)</label>
-                        <input type="text" id="off" name="off" class="form-control" required>
-                    </div>
-
-                    <div class="col-12 col-lg-8">
-                        <label for="subtitle" class="form-label">Subtitulo curto</label>
-                        <input type="text" id="subtitle" name="subtitle" class="form-control" required>
-                    </div>
-
-                    <div class="col-6 col-lg-3">
-                        <label for="oldPrice" class="form-label">Preco antigo</label>
-                        <input type="text" id="oldPrice" name="oldPrice" class="form-control" required>
-                    </div>
-                    <div class="col-6 col-lg-3">
-                        <label for="newPrice" class="form-label">Preco atual</label>
-                        <input type="text" id="newPrice" name="newPrice" class="form-control" required>
-                    </div>
-                    <div class="col-12 col-lg-6">
-                        <label for="shipping" class="form-label">Texto de frete</label>
-                        <input type="text" id="shipping" name="shipping" class="form-control" required>
-                    </div>
-
-                    <div class="col-12">
-                        <label for="affiliateLink" class="form-label">Link de afiliado (compra)</label>
-                        <input type="url" id="affiliateLink" name="affiliateLink" class="form-control" placeholder="https://..." required>
-                    </div>
-
-                    <div class="col-12 col-lg-4">
-                        <label for="image1" class="form-label">Imagem 1 (principal)</label>
-                        <input type="text" id="image1" name="image1" class="form-control" placeholder="img/caixa1.jpeg" required>
-                        <label for="image1File" class="form-label mt-2">Ou enviar imagem local</label>
-                        <input type="file" id="image1File" name="image1File" class="form-control" accept="image/*">
-                    </div>
-                    <div class="col-12 col-lg-4">
-                        <label for="image2" class="form-label">Imagem 2</label>
-                        <input type="text" id="image2" name="image2" class="form-control" placeholder="img/fone1.jpeg">
-                        <label for="image2File" class="form-label mt-2">Ou enviar imagem local</label>
-                        <input type="file" id="image2File" name="image2File" class="form-control" accept="image/*">
-                    </div>
-                    <div class="col-12 col-lg-4">
-                        <label for="image3" class="form-label">Imagem 3</label>
-                        <input type="text" id="image3" name="image3" class="form-control" placeholder="img/tvbox1.jpeg">
-                        <label for="image3File" class="form-label mt-2">Ou enviar imagem local</label>
-                        <input type="file" id="image3File" name="image3File" class="form-control" accept="image/*">
-                    </div>
-
-                    <div class="col-12">
-                        <p class="admin-upload-hint mb-0">Se voce selecionar imagem local, ela sera salva junto do cadastro no navegador. Resolucao minima recomendada: 800x800.</p>
-                    </div>
-
-                    <div class="col-12">
-                        <label for="features" class="form-label">Caracteristicas (uma por linha)</label>
-                        <textarea id="features" name="features" class="form-control" rows="5" required></textarea>
-                    </div>
-
-                    <div class="col-12 d-flex flex-wrap gap-2">
-                        <button class="btn btn-dark" type="submit">Salvar produto</button>
-                        <button class="btn btn-outline-secondary" id="resetPromo" type="button">Restaurar padrao</button>
-                        <button class="btn btn-outline-danger" id="deleteProduct" type="button">Excluir produto selecionado</button>
-                    </div>
-                </form>
-            </section>
-
-            <section class="admin-card mt-4">
-                <h2 class="h5 mb-3">Destaque principal da loja</h2>
-                <p class="admin-hint mb-3">Escolha qual produto deve aparecer no card principal de promocao sem precisar regravar o formulario.</p>
-                <div class="row g-3 align-items-end">
-                    <div class="col-12 col-lg-8">
+                <!-- Side tools: featured product, backup and destructive actions. -->
+                <aside class="admin-side">
+                    <section class="admin-card">
+                        <div class="admin-section-heading">
+                            <div>
+                                <span class="admin-kicker">Vitrine</span>
+                                <h2>Destaque principal</h2>
+                            </div>
+                        </div>
+                        <p class="admin-hint">Escolha qual produto aparece no primeiro card de promocao da loja.</p>
                         <label for="featuredProductSelect" class="form-label">Produto em destaque</label>
-                        <select id="featuredProductSelect" class="form-select">
+                        <select id="featuredProductSelect" class="form-select mb-3">
                             <option value="">Selecione um produto</option>
                         </select>
-                    </div>
-                    <div class="col-12 col-lg-4 d-grid">
-                        <button class="btn btn-warning fw-bold" id="applyFeatured" type="button">Definir como destaque</button>
-                    </div>
-                </div>
-            </section>
+                        <button class="btn btn-warning fw-bold w-100" id="applyFeatured" type="button">Definir destaque</button>
+                    </section>
 
-            <section class="admin-card admin-danger-zone mt-4">
-                <h2 class="h5 mb-3">Zona de seguranca</h2>
-                <p class="admin-hint mb-3">Limpa todos os produtos cadastrados no navegador atual. Essa acao exige confirmacao.</p>
-                <button class="btn btn-danger" id="clearCatalog" type="button">Limpar catalogo inteiro</button>
-            </section>
+                    <section class="admin-card">
+                        <div class="admin-section-heading">
+                            <div>
+                                <span class="admin-kicker">Backup</span>
+                                <h2>Migracao</h2>
+                            </div>
+                        </div>
+                        <p class="admin-hint">Exporte o catalogo em JSON, importe em outro dominio ou gere o seed inicial do deploy.</p>
+                        <div class="d-grid gap-2">
+                            <button class="btn btn-outline-dark" id="exportCatalog" type="button">Exportar catalogo</button>
+                            <button class="btn btn-success" id="exportSeed" type="button">Salvar Seed de Deploy</button>
+                            <button class="btn btn-outline-primary" id="importCatalog" type="button">Importar catalogo</button>
+                            <input type="file" id="importCatalogFile" accept="application/json,.json" hidden>
+                        </div>
+                        <p class="admin-hint mt-3 mb-0">No Railway, coloque o <code>catalog-seed.json</code> na raiz antes do primeiro deploy se quiser iniciar o banco com produtos.</p>
+                    </section>
 
+                    <section class="admin-card admin-danger-zone">
+                        <div class="admin-section-heading">
+                            <div>
+                                <span class="admin-kicker">Seguranca</span>
+                                <h2>Zona critica</h2>
+                            </div>
+                        </div>
+                        <p class="admin-hint">Limpa todos os produtos do catalogo compartilhado. A acao exige confirmacao digitada.</p>
+                        <button class="btn btn-danger w-100" id="clearCatalog" type="button">Limpar catalogo inteiro</button>
+                    </section>
+                </aside>
+            </div>
+
+            <!-- Catalog table/list: edit and delete products without leaving the page. -->
             <section class="admin-card mt-4">
-                <h2 class="h5 mb-3">Backup e migracao</h2>
-                <p class="admin-hint mb-3">Exporte o catalogo atual para JSON e importe no admin de outro dominio. Para que os produtos aparecam automaticamente no Railway apos o deploy, use o botao <strong>Salvar Seed de Deploy</strong>.</p>
-                <div class="d-flex flex-wrap gap-2">
-                    <button class="btn btn-outline-dark" id="exportCatalog" type="button">Exportar catalogo (JSON)</button>
-                    <button class="btn btn-success" id="exportSeed" type="button">&#128640; Salvar Seed de Deploy</button>
-                    <button class="btn btn-outline-primary" id="importCatalog" type="button">Importar catalogo (JSON)</button>
-                    <input type="file" id="importCatalogFile" accept="application/json,.json" hidden>
-                </div>
-                <p class="admin-hint mt-2 text-muted" style="font-size:0.82rem">Seed de Deploy: salva o arquivo <code>catalog-seed.json</code> na pasta do projeto. Ao fazer deploy no Railway, o servidor carrega esse arquivo automaticamente se o banco estiver vazio.</p>
-            </section>
-
-            <section class="admin-card mt-4">
-                <div class="d-flex justify-content-between align-items-center mb-3">
-                    <h2 class="h5 mb-0">Todos os produtos</h2>
-                    <span id="productListCount" class="badge bg-secondary">0 produtos</span>
+                <div class="admin-section-heading">
+                    <div>
+                        <span class="admin-kicker">Inventario</span>
+                        <h2>Todos os produtos</h2>
+                    </div>
+                    <span id="productListCount" class="admin-soft-pill">0 produtos</span>
                 </div>
                 <div class="row g-2 mb-3 admin-list-filters">
                     <div class="col-12 col-lg-6">
@@ -204,6 +267,7 @@
         </div>
     </main>
 
+    <!-- Toast region for short admin feedback. -->
     <div id="miniToast" class="mini-toast" role="status" aria-live="polite"></div>
 
     <script src="admin.js"></script>

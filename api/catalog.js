@@ -1,7 +1,6 @@
 const { readCatalogPayload, writeCatalogPayload } = require("../catalog-store");
 
-// This route stores the full catalog in a shared key/value backend.
-// The storefront and admin both call it, so every device reads the same data.
+// Serverless catalog route kept for compatibility with non-Railway hosts.
 module.exports = async function catalogHandler(req, res) {
     setCorsHeaders(res);
 
@@ -20,6 +19,13 @@ module.exports = async function catalogHandler(req, res) {
     }
 
     if (req.method === "POST") {
+        if (!isAuthorized(req)) {
+            res.statusCode = 401;
+            res.setHeader("Content-Type", "application/json; charset=utf-8");
+            res.end(JSON.stringify({ error: "Unauthorized catalog update" }));
+            return;
+        }
+
         const body = await readRequestBody(req);
         const catalog = Array.isArray(body.catalog) ? body.catalog : [];
         const promoId = typeof body.promoId === "string" ? body.promoId : "";
@@ -39,12 +45,21 @@ module.exports = async function catalogHandler(req, res) {
 };
 
 function setCorsHeaders(res) {
+    // Basic CORS support for admin and storefront calls on preview domains.
     res.setHeader("Access-Control-Allow-Origin", "*");
     res.setHeader("Access-Control-Allow-Methods", "GET,POST,OPTIONS");
-    res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
+    res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization, X-Admin-Password");
+}
+
+function isAuthorized(req) {
+    // Serverless writes require the same ADMIN_PASSWORD used by the Express app.
+    const expectedPassword = String(process.env.ADMIN_PASSWORD || "").trim();
+    const receivedPassword = String(req.headers["x-admin-password"] || "");
+    return Boolean(expectedPassword) && receivedPassword === expectedPassword;
 }
 
 function readRequestBody(req) {
+    // Parse raw request chunks because this file runs without Express middleware.
     return new Promise((resolve, reject) => {
         const chunks = [];
         req.on("data", (chunk) => {

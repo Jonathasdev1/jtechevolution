@@ -166,6 +166,24 @@ async function loadRemoteCatalog(template) {
             localStorage.setItem(STORAGE_KEYS.catalog, JSON.stringify(normalized));
         }
 
+        // Sync the admin-selected featured product for new visitors who have no local promo set.
+        const apiPromoId = typeof parsed.promoId === "string" ? parsed.promoId.trim() : "";
+        if (apiPromoId) {
+            const currentPromo = (() => {
+                try {
+                    const raw = localStorage.getItem(STORAGE_KEYS.promo);
+                    return raw ? JSON.parse(raw) : null;
+                } catch { return null; }
+            })();
+            const currentStillValid = currentPromo && normalized.some((item) => item.id === currentPromo.id);
+            if (!currentStillValid) {
+                const featured = normalized.find((item) => item.id === apiPromoId);
+                if (featured) {
+                    localStorage.setItem(STORAGE_KEYS.promo, JSON.stringify(featured));
+                }
+            }
+        }
+
         return normalized;
     } catch {
         return [];

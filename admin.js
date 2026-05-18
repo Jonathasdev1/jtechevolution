@@ -1,6 +1,8 @@
 const STORAGE_KEYS = {
     promo: "jtechPromoProduct",
-    catalog: "jtechProductCatalog"
+    catalog: "jtechProductCatalog",
+    adminSession: "jtechAdminSession",
+    adminPassword: "jtechAdminPassword"
 };
 
 const IMAGE_MIN_WIDTH = 800;
@@ -13,7 +15,8 @@ const CATALOG_SEED_KEY = "jtechCatalogSeeded";
 const CATALOG_API_URL = resolveCatalogApiUrl();
 
 document.addEventListener("DOMContentLoaded", async () => {
-    const isAuthorized = ensureAdminAccess();
+    // Block the admin screen before loading editable catalog data.
+    const isAuthorized = await ensureAdminAccess();
     if (!isAuthorized) {
         window.location.href = "j-tech.html";
         return;
@@ -64,6 +67,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     refreshFeaturedOptions(featuredSelect, catalog);
     setMode("new", existingWrap, form);
     setupImageInputBehavior(imageTextInputs, imageFileInputs);
+    setupImagePreview(imageTextInputs, imageFileInputs);
     syncFeaturedSelection(featuredSelect);
     updateDeleteButtonState(deleteButton, false);
     applyListFilters();
@@ -251,7 +255,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         void deleteProductById(editingId);
     });
 
-    applyFeaturedButton.addEventListener("click", () => {
+    applyFeaturedButton.addEventListener("click", async () => {
         const featuredId = featuredSelect.value;
         if (!featuredId) {
             showToast("Selecione um produto para destacar.");
@@ -265,6 +269,8 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
 
         localStorage.setItem(STORAGE_KEYS.promo, JSON.stringify(selected));
+        // Persist promoId to backend so all visitors see the same featured product.
+        await persistCatalog(catalog);
         showToast(`Destaque principal definido: ${selected.title}.`);
     });
 
@@ -380,11 +386,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 });
 
-function ensureAdminAccess() {
-    const sessionKey = "jtechAdminSession";
-    const expectedPassword = "JTECH@2026";
-
-    if (sessionStorage.getItem(sessionKey) === "ok") {
+async function ensureAdminAccess() {
+    // The password is confirmed by the server before any catalog write is allowed.
+    if (sessionStorage.getItem(STORAGE_KEYS.adminSession) === "ok" && getAdminPassword()) {
         return true;
     }
 
@@ -393,13 +397,45 @@ function ensureAdminAccess() {
         return false;
     }
 
-    if (enteredPassword === expectedPassword) {
-        sessionStorage.setItem(sessionKey, "ok");
+    const authorized = await verifyAdminPassword(enteredPassword);
+    if (authorized) {
+        sessionStorage.setItem(STORAGE_KEYS.adminSession, "ok");
+        sessionStorage.setItem(STORAGE_KEYS.adminPassword, enteredPassword);
         return true;
     }
 
-    window.alert("Senha incorreta.");
+    window.alert("Senha incorreta ou ADMIN_PASSWORD nao configurada no servidor.");
     return false;
+}
+
+async function verifyAdminPassword(password) {
+    if (!CATALOG_API_URL) {
+        return password === "JTECH@2026";
+    }
+
+    try {
+        const response = await fetch("/api/admin/login", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                Accept: "application/json"
+            },
+            body: JSON.stringify({ password })
+        });
+
+        return response.ok;
+    } catch {
+        return false;
+    }
+}
+
+function getAdminPassword() {
+    return sessionStorage.getItem(STORAGE_KEYS.adminPassword) || "";
+}
+
+function clearAdminSession() {
+    sessionStorage.removeItem(STORAGE_KEYS.adminSession);
+    sessionStorage.removeItem(STORAGE_KEYS.adminPassword);
 }
 
 function getDefaultProduct() {
@@ -678,10 +714,11 @@ async function loadRemoteCatalog() {
 
 async function saveRemoteCatalog(catalog) {
     try {
-        // The shared storage lives behind the Vercel function, so both admin and storefront see the same snapshot.
+        // The shared storage lives behind the API, so both admin and storefront see the same snapshot.
         const response = await fetch(CATALOG_API_URL, {
             method: "POST",
             headers: {
+                "X-Admin-Password": getAdminPassword(),
                 "Content-Type": "application/json",
                 Accept: "application/json"
             },
@@ -692,6 +729,11 @@ async function saveRemoteCatalog(catalog) {
         });
 
         if (!response.ok) {
+            if (response.status === 401) {
+                clearAdminSession();
+                showToast("Sessao expirada. Reabra o admin e informe a senha.");
+                return false;
+            }
             showToast("Nao foi possivel sincronizar com a origem compartilhada.");
             return false;
         }
@@ -819,6 +861,7 @@ function getSectionLabel(section) {
 }
 
 function setupImageInputBehavior(textInputs, fileInputs) {
+    // Keep text paths and local uploads from fighting for the same image slot.
     textInputs.forEach((input) => {
         input.addEventListener("input", () => {
             if (input.value.trim() !== LOCAL_IMAGE_TOKEN) {
@@ -836,6 +879,52 @@ function setupImageInputBehavior(textInputs, fileInputs) {
             if (textInput) {
                 textInput.value = LOCAL_IMAGE_TOKEN;
             }
+        });
+    });
+}
+
+function setupImagePreview(textInputs, fileInputs) {
+    // Preview makes it obvious whether the selected image is sharp enough before saving.
+    const updatePreview = async (slotIndex) => {
+        const textInput = textInputs[slotIndex];
+        const fileInput = fileInputs[slotIndex];
+        const preview = document.querySelector(`[data-image-preview="${slotIndex + 1}"]`);
+        if (!textInput || !preview) {
+            return;
+        }
+
+        const selectedFile = fileInput && fileInput.files && fileInput.files[0] ? fileInput.files[0] : null;
+        if (preview.dataset.objectUrl) {
+            URL.revokeObjectURL(preview.dataset.objectUrl);
+            delete preview.dataset.objectUrl;
+        }
+
+        if (selectedFile) {
+            const objectUrl = URL.createObjectURL(selectedFile);
+            preview.innerHTML = `<img src="${escapeAttr(objectUrl)}" alt="Previa da imagem ${slotIndex + 1}">`;
+            preview.dataset.objectUrl = objectUrl;
+            return;
+        }
+
+        const typedValue = textInput.value.trim();
+        if (typedValue && typedValue !== LOCAL_IMAGE_TOKEN) {
+            preview.innerHTML = `<img src="${escapeAttr(typedValue)}" alt="Previa da imagem ${slotIndex + 1}">`;
+            return;
+        }
+
+        preview.innerHTML = '<span>Sem imagem</span>';
+    };
+
+    textInputs.forEach((input, index) => {
+        input.addEventListener("input", () => {
+            void updatePreview(index);
+        });
+        void updatePreview(index);
+    });
+
+    fileInputs.forEach((input, index) => {
+        input.addEventListener("change", () => {
+            void updatePreview(index);
         });
     });
 }
@@ -864,7 +953,10 @@ async function resolveImageSlot(form, slotIndex) {
 
     const selectedFile = fileInput && fileInput.files && fileInput.files[0] ? fileInput.files[0] : null;
     if (selectedFile) {
-        await validateImageResolution(selectedFile, slotIndex);
+        const hasEnoughResolution = await validateImageResolution(selectedFile, slotIndex);
+        if (!hasEnoughResolution) {
+            return null;
+        }
         let dataUrl = "";
         try {
             dataUrl = await compressImageToDataUrl(selectedFile);
