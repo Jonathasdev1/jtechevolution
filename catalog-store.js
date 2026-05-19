@@ -3,6 +3,7 @@ const fs = require("fs/promises");
 const path = require("path");
 
 let pool = null;
+let databaseUnavailable = false;
 const LOCAL_CATALOG_FILE = path.join(__dirname, ".catalog-local.json");
 const SEED_FILE = path.join(__dirname, "catalog-seed.json");
 
@@ -55,24 +56,29 @@ async function readCatalogPayload() {
         return readLocalCatalogPayload();
     }
 
-    await ensureCatalogTable();
-    const client = await getPool().connect();
     try {
-        const result = await client.query(
-            "SELECT catalog, promo_id FROM jtech_catalog_state WHERE id = 1 LIMIT 1"
-        );
+        await ensureCatalogTable();
+        const client = await getPool().connect();
+        try {
+            const result = await client.query(
+                "SELECT catalog, promo_id FROM jtech_catalog_state WHERE id = 1 LIMIT 1"
+            );
 
-        if (!result.rows.length) {
-            return { catalog: [], promoId: "" };
+            if (!result.rows.length) {
+                return { catalog: [], promoId: "" };
+            }
+
+            const row = result.rows[0] || {};
+            const catalog = Array.isArray(row.catalog) ? row.catalog : [];
+            const promoId = typeof row.promo_id === "string" ? row.promo_id : "";
+
+            return { catalog, promoId };
+        } finally {
+            client.release();
         }
-
-        const row = result.rows[0] || {};
-        const catalog = Array.isArray(row.catalog) ? row.catalog : [];
-        const promoId = typeof row.promo_id === "string" ? row.promo_id : "";
-
-        return { catalog, promoId };
-    } finally {
-        client.release();
+    } catch (error) {
+        markDatabaseUnavailable(error);
+        return readLocalCatalogPayload();
     }
 }
 
@@ -81,33 +87,43 @@ async function writeCatalogPayload(payload) {
         return writeLocalCatalogPayload(payload);
     }
 
-    await ensureCatalogTable();
     const catalog = Array.isArray(payload.catalog) ? payload.catalog : [];
     const promoId = typeof payload.promoId === "string" ? payload.promoId : "";
 
-    const client = await getPool().connect();
     try {
-        await client.query(
-            `
-            INSERT INTO jtech_catalog_state (id, catalog, promo_id, updated_at)
-            VALUES (1, $1::jsonb, $2, NOW())
-            ON CONFLICT (id)
-            DO UPDATE SET
-                catalog = EXCLUDED.catalog,
-                promo_id = EXCLUDED.promo_id,
-                updated_at = NOW()
-            `,
-            [JSON.stringify(catalog), promoId]
-        );
-    } finally {
-        client.release();
+        await ensureCatalogTable();
+        const client = await getPool().connect();
+        try {
+            await client.query(
+                `
+                INSERT INTO jtech_catalog_state (id, catalog, promo_id, updated_at)
+                VALUES (1, $1::jsonb, $2, NOW())
+                ON CONFLICT (id)
+                DO UPDATE SET
+                    catalog = EXCLUDED.catalog,
+                    promo_id = EXCLUDED.promo_id,
+                    updated_at = NOW()
+                `,
+                [JSON.stringify(catalog), promoId]
+            );
+        } finally {
+            client.release();
+        }
+    } catch (error) {
+        markDatabaseUnavailable(error);
+        return writeLocalCatalogPayload(payload);
     }
 
     return { ok: true, catalogCount: catalog.length };
 }
 
 function hasDatabaseConnection() {
-    return Boolean(process.env.DATABASE_URL);
+    return Boolean(process.env.DATABASE_URL) && !databaseUnavailable;
+}
+
+function markDatabaseUnavailable(error) {
+    databaseUnavailable = true;
+    console.warn("J-TECH database unavailable; using local catalog file fallback.", error.message);
 }
 
 async function readLocalCatalogPayload() {

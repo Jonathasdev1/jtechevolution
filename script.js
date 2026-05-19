@@ -8,6 +8,7 @@ const STORAGE_KEYS = {
 const CATALOG_SEED_KEY = "jtechCatalogSeeded";
 // Production uses the shared API route; local development still falls back to browser storage.
 const CATALOG_API_URL = resolveCatalogApiUrl();
+const IMAGE_FALLBACK_BASE_URL = "https://raw.githubusercontent.com/Jonathasdev1/jtechevolution/master/";
 
 const SECTION_MAP = {
     promocoes: "Promocoes",
@@ -18,6 +19,7 @@ const SECTION_MAP = {
 };
 
 document.addEventListener("DOMContentLoaded", () => {
+    setupImageFallback();
     setupCarousel();
 
     setupCartUI([]);
@@ -40,6 +42,80 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 let currentCatalog = [];
+
+function setupImageFallback() {
+    // Railway/Linux returns 404 when static images are missing from the deploy.
+    // In that case, load the same tracked asset directly from the GitHub repository.
+    document.addEventListener(
+        "error",
+        (event) => {
+            const image = event.target;
+            if (!(image instanceof HTMLImageElement)) {
+                return;
+            }
+
+            applyImageFallback(image);
+        },
+        true
+    );
+
+    document.querySelectorAll("img").forEach((image) => {
+        applyImageFallback(image);
+    });
+}
+
+function applyImageFallback(image) {
+    if (!image || image.dataset.fallbackApplied === "true") {
+        return;
+    }
+
+    const fallbackUrl = getImageFallbackUrl(image.getAttribute("src") || image.src || "");
+    if (!fallbackUrl) {
+        return;
+    }
+
+    if (image.complete && image.naturalWidth > 0) {
+        return;
+    }
+
+    image.dataset.fallbackApplied = "true";
+    image.src = fallbackUrl;
+}
+
+function getImageFallbackUrl(src) {
+    const imagePath = getLocalImagePath(src);
+    if (!imagePath) {
+        return "";
+    }
+
+    return `${IMAGE_FALLBACK_BASE_URL}${imagePath
+        .split("/")
+        .map((part) => encodeURIComponent(part))
+        .join("/")}`;
+}
+
+function getLocalImagePath(src) {
+    const value = String(src || "").trim();
+    if (!value || value.startsWith("data:") || value.startsWith("blob:")) {
+        return "";
+    }
+
+    if (value.startsWith("img/")) {
+        return value;
+    }
+
+    if (value.startsWith("/img/")) {
+        return value.slice(1);
+    }
+
+    try {
+        const parsed = new URL(value, window.location.href);
+        const path = decodeURIComponent(parsed.pathname).replace(/^\/+/, "");
+        return path.startsWith("img/") ? path : "";
+    } catch {
+        return "";
+    }
+}
 
 async function refreshStoreFromStorage() {
     currentCatalog = await getCatalog();
@@ -122,14 +198,15 @@ function initializeCatalogIfNeeded(defaults) {
     const safeDefaults = Array.isArray(defaults) ? defaults : [];
     const seeded = localStorage.getItem(CATALOG_SEED_KEY) === "ok";
 
-    // Only seed the demo catalog on localhost so deployed devices do not split data by browser.
+    // Only write the demo catalog on localhost; production can still render it as a fallback
+    // while Railway/PostgreSQL is being configured.
     if (!seeded && safeDefaults.length && isLocalDevelopment()) {
         localStorage.setItem(STORAGE_KEYS.catalog, JSON.stringify(safeDefaults));
         localStorage.setItem(CATALOG_SEED_KEY, "ok");
         return safeDefaults;
     }
 
-    return [];
+    return safeDefaults;
 }
 
 function resolveCatalogApiUrl() {
