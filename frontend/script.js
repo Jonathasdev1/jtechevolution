@@ -213,12 +213,15 @@ function resolveCatalogApiUrl() {
     const meta = document.querySelector('meta[name="jtech-catalog-api"]');
     const metaUrl = meta ? meta.getAttribute("content") || "" : "";
     const configuredUrl = typeof window.JTECH_CATALOG_API_URL === "string" ? window.JTECH_CATALOG_API_URL : "";
+    if (!configuredUrl && !metaUrl && window.location.protocol === "file:") {
+        return "";
+    }
     const defaultUrl = "/api/catalog";
     return (configuredUrl || metaUrl || defaultUrl).trim();
 }
 
 function isLocalDevelopment() {
-    return window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1";
+    return window.location.protocol === "file:" || window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1";
 }
 
 async function loadRemoteCatalog(template) {

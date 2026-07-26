@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>J-TECH Admin | Produtos</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link rel="stylesheet" href="/styles.css">
+</head>
+<body class="admin-body">
+    <main class="admin-shell">
+        <div class="container admin-container">
+            <header class="admin-hero">
+                <div>
+                    <span class="admin-kicker">Area administrativa</span>
+                    <h1 class="admin-title">Produtos</h1>
+                    <p class="admin-hint mb-0">Busque, filtre, edite e remova produtos do catalogo compartilhado.</p>
+                </div>
+                <div class="d-flex gap-2 flex-wrap">
+                    <a class="btn btn-outline-light" href="/admin/cadastro/">Novo cadastro</a>
+                    <a class="btn btn-light admin-store-link" href="/j-tech.html">Ver loja</a>
+                </div>
+            </header>
+
+            <section class="admin-card mt-4">
+                <div class="admin-section-heading">
+                    <div>
+                        <span class="admin-kicker">Inventario</span>
+                        <h2>Todos os produtos</h2>
+                    </div>
+                    <span id="productListCount" class="admin-soft-pill">0 produtos</span>
+                </div>
+                <div class="row g-2 mb-3 admin-list-filters">
+                    <div class="col-12 col-lg-6">
+                        <label for="productListSearch" class="form-label">Buscar por nome</label>
+                        <input type="text" id="productListSearch" class="form-control" placeholder="Digite titulo, ex: Ring Light">
+                    </div>
+                    <div class="col-12 col-lg-4">
+                        <label for="productListSection" class="form-label">Filtrar por secao</label>
+                        <select id="productListSection" class="form-select">
+                            <option value="all">Todas as secoes</option>
+                            <option value="promocoes">Promocoes</option>
+                            <option value="masculina">Masculina</option>
+                            <option value="feminina">Feminina</option>
+                            <option value="eletronicos">Eletronicos</option>
+                            <option value="utensilios">Utensilios</option>
+                        </select>
+                    </div>
+                    <div class="col-12 col-lg-2 d-grid">
+                        <label class="form-label">&nbsp;</label>
+                        <button class="btn btn-outline-secondary" id="clearListFilters" type="button">Limpar filtro</button>
+                    </div>
+                </div>
+                <div id="productListWrap">
+                    <p class="admin-hint mb-0">Nenhum produto cadastrado.</p>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <div id="miniToast" class="mini-toast" role="status" aria-live="polite"></div>
+    <script src="produtos.js"></script>
+</body>
+</html>

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>J-TECH Admin | Login</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/styles.css">
+</head>
+<body class="admin-body">
+    <main class="admin-shell">
+        <div class="container admin-container admin-login-container">
+            <header class="admin-hero">
+                <div>
+                    <span class="admin-kicker">Area administrativa</span>
+                    <h1 class="admin-title">Login seguro</h1>
+                    <p class="admin-hint mb-0">Entre com a senha de administrador para acessar cadastro e produtos.</p>
+                </div>
+                <a class="btn btn-light admin-store-link" href="/j-tech.html">Ver loja</a>
+            </header>
+
+            <section class="admin-card mt-4">
+                <form id="adminLoginForm" class="row g-3">
+                    <div class="col-12">
+                        <label for="adminPassword" class="form-label">Senha do admin</label>
+                        <input id="adminPassword" name="adminPassword" type="password" class="form-control" required autocomplete="current-password" placeholder="Digite sua senha">
+                    </div>
+                    <div class="col-12 d-flex gap-2">
+                        <button class="btn btn-dark" type="submit">Entrar</button>
+                        <a class="btn btn-outline-secondary" href="/j-tech.html">Cancelar</a>
+                    </div>
+                </form>
+            </section>
+        </div>
+    </main>
+
+    <div id="miniToast" class="mini-toast" role="status" aria-live="polite"></div>
+    <script src="login.js"></script>
+</body>
+</html>

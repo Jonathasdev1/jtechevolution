@@ -4,8 +4,9 @@ const path = require("path");
 
 let pool = null;
 let databaseUnavailable = false;
-const LOCAL_CATALOG_FILE = path.join(__dirname, ".catalog-local.json");
-const SEED_FILE = path.join(__dirname, "catalog-seed.json");
+const databaseDir = path.join(__dirname, "..", "banco");
+const LOCAL_CATALOG_FILE = path.join(databaseDir, ".catalog-local.json");
+const SEED_FILE = path.join(databaseDir, "catalog-seed.json");
 
 function getPool() {
     if (pool) {

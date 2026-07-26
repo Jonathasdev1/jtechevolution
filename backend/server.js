@@ -12,6 +12,9 @@ const app = express();
 const port = Number(process.env.PORT || 3000);
 const isProduction = process.env.NODE_ENV === "production";
 const defaultLocalAdminPassword = "JTECH@2026";
+const frontendDir = path.join(__dirname, "..", "frontend");
+const adminDir = path.join(__dirname, "..", "admin");
+const imagesDir = path.join(__dirname, "..", "imagens");
 
 // Small security defaults for a public storefront.
 app.disable("x-powered-by");
@@ -73,15 +76,32 @@ app.get("/api/health", (_req, res) => {
     });
 });
 
-// Static files live in the project root.
-app.use(express.static(__dirname, {
+// Static files live in the frontend folder.
+app.use("/img", express.static(imagesDir, {
+    maxAge: isProduction ? "1h" : 0
+}));
+
+app.use(express.static(frontendDir, {
     extensions: ["html"],
     maxAge: isProduction ? "1h" : 0
 }));
 
+app.use(express.static(adminDir, {
+    extensions: ["html"],
+    maxAge: isProduction ? "1h" : 0
+}));
+
+app.get("/admin.html", (_req, res) => {
+    res.redirect(302, "/admin/login/");
+});
+
+app.get("/admin", (_req, res) => {
+    res.redirect(302, "/admin/login/");
+});
+
 // Keep the same entry page behavior used before in static hosting.
 app.get("/", (_req, res) => {
-    res.sendFile(path.join(__dirname, "j-tech.html"));
+    res.sendFile(path.join(frontendDir, "j-tech.html"));
 });
 
 // One central password resolver keeps local development simple and production explicit.

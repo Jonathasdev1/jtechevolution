@@ -3,9 +3,9 @@
   "version": "1.0.0",
   "private": true,
   "description": "J-TECH storefront + admin with Railway/PostgreSQL catalog sync",
-  "main": "server.js",
+  "main": "backend/server.js",
   "scripts": {
-    "start": "node server.js"
+    "start": "node backend/server.js"
   },
   "engines": {
     "node": ">=18"
