@@ -143,18 +143,18 @@ function normalizeCatalogPayload(body) {
 
 // Startup prepares storage first, then opens the web server.
 async function start() {
+    warnAboutRuntimeConfig();
+
+    app.listen(port, () => {
+        console.log(`J-TECH server running on port ${port}`);
+    });
+
+    // Keep Railway healthcheck responsive even when database bootstrapping is slow.
     try {
-        warnAboutRuntimeConfig();
         await ensureCatalogTable();
         await seedCatalogIfEmpty();
-        app.listen(port, () => {
-            console.log(`J-TECH server running on port ${port}`);
-        });
     } catch (error) {
         console.error("J-TECH startup storage warning", error);
-        app.listen(port, () => {
-            console.log(`J-TECH server running on port ${port} without shared database storage`);
-        });
     }
 }
 
