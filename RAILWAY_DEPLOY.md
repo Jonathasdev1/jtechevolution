@@ -8,6 +8,7 @@
 - `admin/cadastro/index.html` + `admin/cadastro/admin.js`: painel de cadastro e gestao de produtos.
 - `banco/catalog-seed.json`: seed opcional para primeiro deploy.
 - `railway.json`: comando de start e health check para o Railway.
+- `jtech-config.js`: URL do backend usada pelo front/admin quando o deploy e separado.
 
 ## Variaveis obrigatorias
 
@@ -17,9 +18,38 @@ Configure no Railway:
 DATABASE_URL=postgresql://...
 ADMIN_PASSWORD=uma-senha-forte
 NODE_ENV=production
+CORS_ORIGIN=*
 ```
 
 O Railway preenche `PORT` automaticamente. Nao crie uma variavel `PORT` manualmente.
+
+Depois que o Railway publicar o backend, abra a URL:
+
+```text
+https://seu-backend.up.railway.app/health
+```
+
+Ela deve responder `{"ok":true}`.
+
+## Frontend separado no Netlify
+
+1. Primeiro publique o backend no Railway.
+2. Copie a URL publica do Railway, sem barra final.
+3. Edite `jtech-config.js`:
+
+```js
+window.JTECH_API_BASE_URL = "https://seu-backend.up.railway.app";
+```
+
+4. Faca commit/push dessa alteracao para o GitHub.
+5. No Netlify, use:
+
+```text
+Build command: vazio
+Publish directory: .
+```
+
+O `netlify.toml` redireciona `/` para a loja, mantem o admin em `/admin/login/` e serve imagens por `/img/...`.
 
 ## Banco de dados
 
@@ -48,10 +78,12 @@ O seed so e aplicado se o banco ainda estiver vazio.
 - `/admin/produtos/`: listagem e gestao de produtos.
 - `/api/catalog`: leitura publica e gravacao protegida.
 - `/api/health`: health check do Railway.
+- `/health`: health check simples do Railway.
 
 ## Checklist antes de publicar
 
 - Trocar `ADMIN_PASSWORD`.
 - Confirmar `DATABASE_URL`.
+- Confirmar `CORS_ORIGIN` (`*` funciona; depois pode trocar pela URL do Netlify).
 - Rodar `npm start` localmente.
 - Abrir `/admin/login/`, entrar com a senha e cadastrar um produto.

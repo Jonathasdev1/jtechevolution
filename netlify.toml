@@ -1,8 +1,43 @@
 [build]
-  publish = "frontend"
+  publish = "."
 
 [[redirects]]
   from = "/"
-  to = "/j-tech.html"
+  to = "/frontend/j-tech.html"
   status = 301
   force = true
+
+[[redirects]]
+  from = "/j-tech.html"
+  to = "/frontend/j-tech.html"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/masculina.html"
+  to = "/frontend/masculina.html"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/feminina.html"
+  to = "/frontend/feminina.html"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/eletronicos.html"
+  to = "/frontend/eletronicos.html"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/utensilios.html"
+  to = "/frontend/utensilios.html"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/img/*"
+  to = "/imagens/:splat"
+  status = 200

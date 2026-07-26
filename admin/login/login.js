@@ -37,7 +37,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 async function verifyAdminPassword(password) {
     try {
-        const response = await fetch("/api/admin/login", {
+        const response = await fetch(getApiUrl("/api/admin/login"), {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -54,6 +54,11 @@ async function verifyAdminPassword(password) {
     } catch {
         return isLocalDevelopment() && password === "JTECH@2026";
     }
+}
+
+function getApiUrl(path) {
+    const baseUrl = typeof window.JTECH_API_BASE_URL === "string" ? window.JTECH_API_BASE_URL.trim().replace(/\/+$/, "") : "";
+    return baseUrl ? `${baseUrl}${path}` : path;
 }
 
 function isLocalDevelopment() {

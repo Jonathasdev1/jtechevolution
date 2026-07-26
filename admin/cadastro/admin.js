@@ -413,7 +413,7 @@ async function verifyAdminPassword(password) {
     }
 
     try {
-        const response = await fetch("/api/admin/login", {
+        const response = await fetch(getApiUrl("/api/admin/login"), {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -688,8 +688,13 @@ function resolveCatalogApiUrl() {
         return "";
     }
     // Railway and Vercel can both expose this route on the same domain.
-    const defaultUrl = "/api/catalog";
+    const defaultUrl = getApiUrl("/api/catalog");
     return (configuredUrl || metaUrl || defaultUrl).trim();
+}
+
+function getApiUrl(path) {
+    const baseUrl = typeof window.JTECH_API_BASE_URL === "string" ? window.JTECH_API_BASE_URL.trim().replace(/\/+$/, "") : "";
+    return baseUrl ? `${baseUrl}${path}` : path;
 }
 
 function isLocalDevelopment() {

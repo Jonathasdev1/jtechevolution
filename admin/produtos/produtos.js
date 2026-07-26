@@ -5,7 +5,7 @@ const STORAGE_KEYS = {
     adminPassword: "jtechAdminPassword"
 };
 
-const CATALOG_API_URL = "/api/catalog";
+const CATALOG_API_URL = getApiUrl("/api/catalog");
 
 document.addEventListener("DOMContentLoaded", async () => {
     if (!hasAdminSession()) {
@@ -118,6 +118,11 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 function hasAdminSession() {
     return sessionStorage.getItem(STORAGE_KEYS.adminSession) === "ok" && Boolean(sessionStorage.getItem(STORAGE_KEYS.adminPassword));
+}
+
+function getApiUrl(path) {
+    const baseUrl = typeof window.JTECH_API_BASE_URL === "string" ? window.JTECH_API_BASE_URL.trim().replace(/\/+$/, "") : "";
+    return baseUrl ? `${baseUrl}${path}` : path;
 }
 
 async function loadCatalogPayload() {

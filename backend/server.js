@@ -12,6 +12,7 @@ const app = express();
 const port = Number(process.env.PORT || 3000);
 const isProduction = process.env.NODE_ENV === "production";
 const defaultLocalAdminPassword = "JTECH@2026";
+const projectRoot = path.join(__dirname, "..");
 const frontendDir = path.join(__dirname, "..", "frontend");
 const adminDir = path.join(__dirname, "..", "admin");
 const imagesDir = path.join(__dirname, "..", "imagens");
@@ -21,6 +22,21 @@ app.disable("x-powered-by");
 app.use((_req, res, next) => {
     res.setHeader("X-Content-Type-Options", "nosniff");
     res.setHeader("Referrer-Policy", "strict-origin-when-cross-origin");
+    next();
+});
+
+app.use((req, res, next) => {
+    const allowedOrigin = resolveCorsOrigin(req);
+    if (allowedOrigin) {
+        res.setHeader("Access-Control-Allow-Origin", allowedOrigin);
+        res.setHeader("Vary", "Origin");
+    }
+    res.setHeader("Access-Control-Allow-Methods", "GET,POST,OPTIONS");
+    res.setHeader("Access-Control-Allow-Headers", "Content-Type,Accept,X-Admin-Password");
+    if (req.method === "OPTIONS") {
+        res.sendStatus(204);
+        return;
+    }
     next();
 });
 
@@ -76,7 +92,16 @@ app.get("/api/health", (_req, res) => {
     });
 });
 
+app.get("/health", (_req, res) => {
+    res.status(200).json({ ok: true });
+});
+
 // Static files live in the frontend folder.
+app.get("/jtech-config.js", (_req, res) => {
+    res.type("application/javascript");
+    res.sendFile(path.join(projectRoot, "jtech-config.js"));
+});
+
 app.use("/img", express.static(imagesDir, {
     maxAge: isProduction ? "1h" : 0
 }));
@@ -130,6 +155,24 @@ function requireAdminPassword(req, res, next) {
     }
 
     next();
+}
+
+function resolveCorsOrigin(req) {
+    const origin = String(req.get("Origin") || "").trim();
+    const configuredOrigins = String(process.env.CORS_ORIGIN || "")
+        .split(",")
+        .map((item) => item.trim())
+        .filter(Boolean);
+
+    if (!origin) {
+        return "";
+    }
+
+    if (!configuredOrigins.length || configuredOrigins.includes("*")) {
+        return "*";
+    }
+
+    return configuredOrigins.includes(origin) ? origin : "";
 }
 
 // Normalize the write payload before it reaches the storage layer.
