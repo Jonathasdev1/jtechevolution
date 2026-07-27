@@ -111,6 +111,11 @@ app.use(express.static(frontendDir, {
     maxAge: isProduction ? "1h" : 0
 }));
 
+app.use("/admin", express.static(adminDir, {
+    extensions: ["html"],
+    maxAge: isProduction ? "1h" : 0
+}));
+
 app.use(express.static(adminDir, {
     extensions: ["html"],
     maxAge: isProduction ? "1h" : 0
